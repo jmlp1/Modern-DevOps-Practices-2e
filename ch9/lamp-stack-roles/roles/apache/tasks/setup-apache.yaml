@@ -1,12 +1,15 @@
 ---
 - name: Delete index.html file
+  become: yes
   file:
     path: /var/www/html/index.html
     state: absent
+
 - name: Upload application file
+  become: yes
   template:
     src: index.php.j2
     dest: /var/www/html/index.php
-    mode: 0755
+    mode: '0755'
   notify:
-    - Restart Apache
+    - restart apache2

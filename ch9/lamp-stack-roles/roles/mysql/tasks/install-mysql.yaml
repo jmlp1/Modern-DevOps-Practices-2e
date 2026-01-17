@@ -1,13 +1,16 @@
----  
+---
 - name: Install packages
+  become: yes  # <--- CRITICAL: Required for apt
   apt:
     name:
-    - python-pymysql
+    - python3-pymysql  # <--- FIXED: Must be python3 for Ubuntu 24.04
     - mysql-server
-    update_cache: yes 
-    cache_valid_time: 3600 
+    update_cache: yes
+    cache_valid_time: 3600
     state: present
+
 - name: Start and enable MySQL service
+  become: yes  # <--- CRITICAL: Required for service management
   service:
     name: mysql
     state: started

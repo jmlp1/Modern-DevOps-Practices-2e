@@ -1,4 +1,7 @@
 # Handler for role webserver
 ---
 - name: Restart Apache
-  service: name=apache2 state=restarted
+  become: yes
+  service: 
+    name: apache2 
+    state: restarted
