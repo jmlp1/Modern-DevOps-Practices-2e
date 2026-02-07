@@ -1,3 +1,9 @@
 ---
 mysql_user: "testuser"
 mysql_password: "Password@1"
+
+# ADD THESE MISSING LINES FOR UBUNTU 24.04:
+apache_package: "apache2"
+php_package: "php"
+apache_php_module: "libapache2-mod-php"
+php_mysql_package: "php-mysql"

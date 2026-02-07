@@ -1,17 +1,24 @@
 ---
 - name: Set the root password
+  become: yes
   mysql_user:
     name: root
     password: "{{ mysql_root_password }}"
     login_unix_socket: /var/run/mysqld/mysqld.sock
+    check_implicit_admin: yes  # Required for 2026 Ansible to handle the first-time password set
+    state: present
+
 - name: Update the cnf file
+  become: yes
   template:
-    src: ../templates/client.my.cnf.j2
+    src: client.my.cnf.j2 # Removed ../templates/ as Ansible looks in templates/ by default
     dest: "/root/.my.cnf"
-    mode: 0600
+    mode: '0600'
   notify:
   - Restart MySQL
+
 - name: Create a test user
+  become: yes
   mysql_user:
     name: "{{ mysql_user }}"
     password: "{{ mysql_password }}"
@@ -20,7 +27,9 @@
     state: present
     priv: '*.*:ALL,GRANT'
     host: '%'
+
 - name: Remove all anonymous user accounts
+  become: yes
   mysql_user:
     name: ''
     host_all: yes
@@ -29,7 +38,9 @@
     login_password: "{{ mysql_root_password }}"
   notify:
   - Restart MySQL
+
 - name: Remove the MySQL test database
+  become: yes
   mysql_db:
     name: test
     state: absent
@@ -37,9 +48,11 @@
     login_password: "{{ mysql_root_password }}"
   notify:
   - Restart MySQL
+
 - name: Change bind address
+  become: yes
   lineinfile:
-    path:  /etc/mysql/mysql.conf.d/mysqld.cnf
+    path: /etc/mysql/mysql.conf.d/mysqld.cnf
     regexp: ^bind-address
     line: 'bind-address            = 0.0.0.0'
   notify:
